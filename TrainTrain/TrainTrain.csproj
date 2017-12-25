@@ -46,14 +46,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BookingReferenceService.cs" />
+    <Compile Include="Infra\BookingReferenceService.cs" />
+    <Compile Include="Domain\Coach.cs" />
+    <Compile Include="Domain\IBookingReferenceService.cs" />
+    <Compile Include="Domain\IReserveSeats.cs" />
+    <Compile Include="Domain\ITrainDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Seat.cs" />
-    <Compile Include="ThreasholdManager.cs" />
-    <Compile Include="Train.cs" />
-    <Compile Include="TrainCaching.cs" />
-    <Compile Include="TrainDataService.cs" />
-    <Compile Include="WebTicketManager.cs" />
+    <Compile Include="Domain\Reservation.cs" />
+    <Compile Include="Domain\ReservationAttempt.cs" />
+    <Compile Include="Domain\ReservationAttemptFailed.cs" />
+    <Compile Include="Domain\ReservationFailed.cs" />
+    <Compile Include="Infra\ReservationRequestDto.cs" />
+    <Compile Include="Infra\SeatsReservationAdapter.cs" />
+    <Compile Include="Domain\Seat.cs" />
+    <Compile Include="Infra\SeatJsonPoco.cs" />
+    <Compile Include="Domain\ThreasholdCapacity.cs" />
+    <Compile Include="Domain\Train.cs" />
+    <Compile Include="Infra\TrainDataService.cs" />
+    <Compile Include="Domain\SeatsReservation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrainTrain.Dal\TrainTrain.Dal.csproj">
@@ -64,5 +74,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

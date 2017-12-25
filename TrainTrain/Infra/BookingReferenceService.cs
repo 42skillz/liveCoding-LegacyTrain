@@ -2,14 +2,10 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using TrainTrain.Domain;
 
-namespace TrainTrain
+namespace TrainTrain.Infra
 {
-    public interface IBookingReferenceService
-    {
-        Task<string> GetBookingReference();
-    }
-
     public class BookingReferenceService : IBookingReferenceService
     {
         private readonly string _uriBookingReferenceService;

@@ -2,6 +2,8 @@
 using NFluent;
 using NSubstitute;
 using NUnit.Framework;
+using TrainTrain.Domain;
+using TrainTrain.Infra;
 
 namespace TrainTrain.Test.Acceptance
 {
@@ -14,15 +16,21 @@ namespace TrainTrain.Test.Acceptance
         public void Reserve_seats_when_train_is_empty()
         {
             const int seatsRequestedCount = 3;
+            // Step1: Instantiate the "I want to go out" adapters
+            var trainDataServiceAdapter = BuildTrainDataService(TrainId, TrainTopologyGenerator.With_10_available_seats());
+            var bookingReferenceServiceAdapter = BuildBookingReferenceService(BookingReference);
 
-            var trainDataService = BuildTrainDataService(TrainId, TrainTopologyGenerator.With_10_available_seats());
-            var bookingReferenceService = BuildBookingReferenceService(BookingReference);
-
-            var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
-            var jsonReservation = webTicketManager.Reserve(TrainId, seatsRequestedCount).Result;
+            var reservationRequestDto = new ReservationRequestDto {train_id = TrainId, number_of_seats = seatsRequestedCount};
+            // Step2: Instantiate the hexagon
+            IReserveSeats hexagon = new SeatsReservation(trainDataServiceAdapter, bookingReferenceServiceAdapter);
+ 
+            // Step3: Instantiate the "I want to go in" adapter(s)
+            var seatsReservationAdapter = new SeatsReservationAdapter(hexagon);
+            var jsonReservation = seatsReservationAdapter.Post(reservationRequestDto).Result;
 
             Check.That(jsonReservation)
-                .IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1A\", \"2A\", \"3A\"]}}");
+                .IsEqualTo(
+                    $"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1A\", \"2A\", \"3A\"]}}");
         }
 
         [Test]
@@ -30,11 +38,18 @@ namespace TrainTrain.Test.Acceptance
         {
             const int seatsRequestedCount = 3;
 
-            var trainDataService = BuildTrainDataService(TrainId, TrainTopologyGenerator.With_10_seats_and_6_already_reserved());
-            var bookingReferenceService = BuildBookingReferenceService(BookingReference);
+            var trainDataServiceAdapter =
+                BuildTrainDataService(TrainId, TrainTopologyGenerator.With_10_seats_and_6_already_reserved());
+            var bookingReferenceServiceAdapter = BuildBookingReferenceService(BookingReference);
 
-            var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
-            var jsonReservation = webTicketManager.Reserve(TrainId, seatsRequestedCount).Result;
+
+            var reservationRequestDto = new ReservationRequestDto { train_id = TrainId, number_of_seats = seatsRequestedCount };
+            // Step2: Instantiate the hexagon
+            IReserveSeats hexagon = new SeatsReservation(trainDataServiceAdapter, bookingReferenceServiceAdapter);
+
+            // Step3: Instantiate the "I want to go in" adapter(s)
+            var seatsReservationAdapter = new SeatsReservationAdapter(hexagon);
+            var jsonReservation = seatsReservationAdapter.Post(reservationRequestDto).Result;
 
             Check.That(jsonReservation)
                 .IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"\", \"seats\": []}}");
@@ -45,14 +60,22 @@ namespace TrainTrain.Test.Acceptance
         {
             const int seatsRequestedCount = 2;
 
-            var trainDataService = BuildTrainDataService(TrainId, TrainTopologyGenerator.With_2_coaches_and_9_seats_already_reserved_in_the_first_coach());
-            var bookingReferenceService = BuildBookingReferenceService(BookingReference);
+            var trainDataServiceAdapter = BuildTrainDataService(TrainId,
+                TrainTopologyGenerator.With_2_coaches_and_9_seats_already_reserved_in_the_first_coach());
+            var bookingReferenceServiceAdapter = BuildBookingReferenceService(BookingReference);
 
-            var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
-            var jsonReservation = webTicketManager.Reserve(TrainId, seatsRequestedCount).Result;
+
+            var reservationRequestDto = new ReservationRequestDto { train_id = TrainId, number_of_seats = seatsRequestedCount };
+            // Step2: Instantiate the hexagon
+            IReserveSeats hexagon = new SeatsReservation(trainDataServiceAdapter, bookingReferenceServiceAdapter);
+
+            // Step3: Instantiate the "I want to go in" adapter(s)
+            var seatsReservationAdapter = new SeatsReservationAdapter(hexagon);
+            var jsonReservation = seatsReservationAdapter.Post(reservationRequestDto).Result;
 
             Check.That(jsonReservation)
-                .IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1B\", \"2B\"]}}");
+                .IsEqualTo(
+                    $"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1B\", \"2B\"]}}");
         }
 
         private static IBookingReferenceService BuildBookingReferenceService(string bookingReference)
@@ -66,8 +89,9 @@ namespace TrainTrain.Test.Acceptance
         {
             var trainDataService = Substitute.For<ITrainDataService>();
             trainDataService.GetTrain(trainId)
-                .Returns(Task.FromResult(trainTopology));
+                .Returns(Task.FromResult(new Train(TrainDataService.AdaptTrainTopology(trainTopology))));
             return trainDataService;
         }
     }
+  
 }
