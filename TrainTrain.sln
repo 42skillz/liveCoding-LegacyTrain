@@ -1,7 +1,6 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrain", "TrainTrain\TrainTrain.csproj", "{B7FBBF93-B9F3-4BD8-8B8A-7F7BF52B588A}"
 EndProject
@@ -15,7 +14,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrainTrain.Api", "TrainTrain.Api\TrainTrain.Api.csproj", "{68C05460-30E0-4FB4-A8BF-3CFA9412181B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrain.Test", "TrainTrain.Test\TrainTrain.Test.csproj", "{34A5D027-0955-4653-B4E3-E067B7480472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrain.Spec", "TrainTrain.Spec\TrainTrain.Spec.csproj", "{3D8481A2-6F9C-4DC1-920F-252B50286A8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTopologyGenerator.Test", "TrainTopologyGenerator.Test\TrainTopologyGenerator.Test.csproj", "{34A5D027-0955-4653-B4E3-E067B7480472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrain.Test", "TrainTrain.Test\TrainTrain.Test.csproj", "{5BF71920-789E-4BBF-8542-A7AA987012A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,15 +38,23 @@ Global
 		{68C05460-30E0-4FB4-A8BF-3CFA9412181B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68C05460-30E0-4FB4-A8BF-3CFA9412181B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68C05460-30E0-4FB4-A8BF-3CFA9412181B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D8481A2-6F9C-4DC1-920F-252B50286A8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D8481A2-6F9C-4DC1-920F-252B50286A8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D8481A2-6F9C-4DC1-920F-252B50286A8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D8481A2-6F9C-4DC1-920F-252B50286A8D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{34A5D027-0955-4653-B4E3-E067B7480472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{34A5D027-0955-4653-B4E3-E067B7480472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A5D027-0955-4653-B4E3-E067B7480472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34A5D027-0955-4653-B4E3-E067B7480472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BF71920-789E-4BBF-8542-A7AA987012A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BF71920-789E-4BBF-8542-A7AA987012A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BF71920-789E-4BBF-8542-A7AA987012A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BF71920-789E-4BBF-8542-A7AA987012A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C5705F38-8BA3-469F-A977-47A8991B8D87}
+		SolutionGuid = {2085397F-C047-4366-AC46-B1F7E8832AF1}
 	EndGlobalSection
 EndGlobal

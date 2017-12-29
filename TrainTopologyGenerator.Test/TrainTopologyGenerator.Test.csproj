@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B7FBBF93-B9F3-4BD8-8B8A-7F7BF52B588A}</ProjectGuid>
+    <ProjectGuid>{34A5D027-0955-4653-B4E3-E067B7480472}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TrainTrain</RootNamespace>
-    <AssemblyName>TrainTrain</AssemblyName>
+    <RootNamespace>TrainTrain.Test</RootNamespace>
+    <AssemblyName>TrainTrain.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,8 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="NFluent, Version=2.0.0.44, Culture=neutral, PublicKeyToken=18828b37b84b1437, processorArchitecture=MSIL">
+      <HintPath>..\packages\NFluent.2.0.0-alpha-44\lib\net40\NFluent.dll</HintPath>
+    </Reference>
+    <Reference Include="NSubstitute, Version=2.0.3.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\NSubstitute.2.0.3\lib\net45\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,18 +52,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenerateParams.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Seat.cs" />
-    <Compile Include="ThreasholdManager.cs" />
-    <Compile Include="Train.cs" />
-    <Compile Include="TrainCaching.cs" />
-    <Compile Include="WebTicketManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TrainTrain.Dal\TrainTrain.Dal.csproj">
-      <Project>{11b75ce2-05f8-4c3b-81e2-bf378725b2b3}</Project>
-      <Name>TrainTrain.Dal</Name>
-    </ProjectReference>
+    <Compile Include="TrainTopologyGenerator.cs" />
+    <Compile Include="TrainTopologyGeneratorShould.cs" />
+    <Compile Include="TrainTopologyStaticGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
