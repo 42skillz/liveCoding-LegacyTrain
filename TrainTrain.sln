@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrainTrain.Api", "TrainTrai
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrain.Test", "TrainTrain.Test\TrainTrain.Test.csproj", "{34A5D027-0955-4653-B4E3-E067B7480472}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainTrain.Dal.Test", "TrainTrain.Dal.Test\TrainTrain.Dal.Test.csproj", "{FB05DD56-585A-49BE-9E1F-D4771406E92B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,8 +47,15 @@ Global
 		{34A5D027-0955-4653-B4E3-E067B7480472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34A5D027-0955-4653-B4E3-E067B7480472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34A5D027-0955-4653-B4E3-E067B7480472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB05DD56-585A-49BE-9E1F-D4771406E92B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB05DD56-585A-49BE-9E1F-D4771406E92B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB05DD56-585A-49BE-9E1F-D4771406E92B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB05DD56-585A-49BE-9E1F-D4771406E92B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EE92FC2A-31F5-44E4-B2E0-5827FC8AE1F7}
 	EndGlobalSection
 EndGlobal

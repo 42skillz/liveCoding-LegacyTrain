@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using TrainTrain.Dal.Entities;
@@ -75,7 +76,6 @@ namespace TrainTrain.Dal
         {
             using (var db = new TrainTrainContext())
             {
-               
                 var trains = db.Trains.Include(t => t.Seats).ToList();
                 if (trains.Any())
                 {
