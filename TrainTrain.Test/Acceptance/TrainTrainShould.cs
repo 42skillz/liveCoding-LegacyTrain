@@ -13,6 +13,8 @@ namespace TrainTrain.Test.Acceptance
         [Test]
         public void Reserve_seats_when_the_train_is_empty()
         {
+            const int seatsRequestedCount = 3;
+
             var trainDataService = Substitute.For<ITrainDataService>();
             trainDataService.GetTrain(TrainId).Returns(Task.FromResult(
                 "{\"seats\": {" +
@@ -33,7 +35,7 @@ namespace TrainTrain.Test.Acceptance
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
-            var reservation = webTicketManager.Reserve(TrainId, 3).Result;
+            var reservation = webTicketManager.Reserve(TrainId, seatsRequestedCount).Result;
 
             Check.That(reservation).IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1A\", \"2A\", \"3A\"]}}");
         }
