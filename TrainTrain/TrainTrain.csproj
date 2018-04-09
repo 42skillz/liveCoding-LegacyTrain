@@ -58,6 +58,7 @@
     <Compile Include="ThreasholdManager.cs" />
     <Compile Include="Train.cs" />
     <Compile Include="TrainCaching.cs" />
+    <Compile Include="TrainDataService.cs" />
     <Compile Include="WebTicketManager.cs" />
   </ItemGroup>
   <ItemGroup>
