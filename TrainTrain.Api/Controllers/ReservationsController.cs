@@ -29,7 +29,7 @@ namespace TrainTrain.Api.Controllers
         public async Task<string> Post([FromBody]ReservationRequestDto reservationRequest)
         {
             var manager = new WebTicketManager();
-            return await manager.Reserve(reservationRequest.train_id, reservationRequest.number_of_seats);
+            return SeatsReservationAdapter.AdaptReservation(await manager.Reserve(reservationRequest.train_id, reservationRequest.number_of_seats));
         }
 
         // PUT api/values/5

@@ -54,8 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BookingReferenceService.cs" />
+    <Compile Include="Coach.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reservation.cs" />
+    <Compile Include="ReservationAttempt.cs" />
+    <Compile Include="ReservationAttemptFailure.cs" />
+    <Compile Include="ReservationFailure.cs" />
     <Compile Include="Seat.cs" />
+    <Compile Include="SeatJsonPoco.cs" />
     <Compile Include="ThreasholdManager.cs" />
     <Compile Include="Train.cs" />
     <Compile Include="TrainCaching.cs" />

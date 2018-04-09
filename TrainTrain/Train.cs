@@ -1,68 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Linq;
+using Value;
+using Value.Shared;
 
 namespace TrainTrain
 {
-    public class Train
+    public class Train: ValueType<Train>
     {
-        public Train(string trainTopol)
+        public string TrainId { get; }
+        public Dictionary<string, Coach> Coaches { get; } = new Dictionary<string, Coach>();
+        public int MaxSeat => Seats.Count;
+
+        public int ReservedSeats
         {
-            this.Seats = new List<Seat>();
-            //var sample =
-            //"{\"seats\": {\"1A\": {\"booking_reference\": \"\", \"seat_number\": \"1\", \"coach\": \"A\"}, \"2A\": {\"booking_reference\": \"\", \"seat_number\": \"2\", \"coach\": \"A\"}}}";
+            get { return Seats.Count(s => s.BookingRef != string.Empty); }
+        }
 
-            // Forced to workaround with dynamic parsing since the received JSON is invalid format ;-(
-            dynamic parsed = JsonConvert.DeserializeObject(trainTopol);
+        public List<Seat> Seats
+        {
+            get { return Coaches.SelectMany(c => c.Value.Seats).ToList(); }
+        }
 
-            foreach (var token in ((Newtonsoft.Json.Linq.JContainer)parsed))
+        public Train(string trainId, IEnumerable<Seat> seats)
+        {
+            TrainId = trainId;
+            foreach (var seat in seats)
             {
-                var allStuffs = ((Newtonsoft.Json.Linq.JObject) ((Newtonsoft.Json.Linq.JContainer) token).First);
-
-                foreach (var stuff in allStuffs)
+                if (!Coaches.ContainsKey(seat.CoachName))
                 {
-                    var seat = stuff.Value.ToObject<SeatJsonPoco>();
-                    this.Seats.Add(new Seat(seat.coach, int.Parse(seat.seat_number), seat.booking_reference));
-                    if (!string.IsNullOrEmpty(seat.booking_reference))
-                    {
-                        this.ReservedSeats++;
-                    }
+                   Coaches[seat.CoachName] = new Coach(trainId, seat.CoachName);
                 }
+
+                var coach = Coaches[seat.CoachName].AddSeat(seat);
+                Coaches[seat.CoachName] = coach;
             }
         }
 
-        public int GetMaxSeat()
+        public bool DoesNotExceedTrainOvervallCapityLimit(int seatsRequestedCount)
         {
-            return this.Seats.Count;
+            return ReservedSeats + seatsRequestedCount <= Math.Floor(ThreasholdManager.GetMaxRes() * MaxSeat);
         }
 
-        public int ReservedSeats { get; set; }
-        public List<Seat> Seats { get; set; }
-
-        public bool HasLessThanThreshold(int i)
+        public ReservationAttempt BuildReservationAttempt(int seatsRequestedCount)
         {
-            return ReservedSeats < i;
+            ReservationAttempt reservationAttempt = new ReservationAttemptFailure(TrainId, seatsRequestedCount);
+
+            foreach (var coach in Coaches.Values)
+            {
+                if (coach.DoesNotExceedCoachOvervallCapityLimit(seatsRequestedCount))
+                {
+                    reservationAttempt = coach.BuildReservationAttempt(seatsRequestedCount);
+
+                    if (reservationAttempt.IsFulFilled)
+                    {
+                        return reservationAttempt;
+                    }
+                }
+            }
+
+            if (!reservationAttempt.IsFulFilled)
+            {
+                foreach (var coach in Coaches.Values)
+                {
+                    reservationAttempt = coach.BuildReservationAttempt(seatsRequestedCount);
+                    if (reservationAttempt.IsFulFilled)
+                    {
+                        return reservationAttempt;
+                    }
+                }
+            }
+            return reservationAttempt;
         }
-    }
 
-    public class TrainJsonPoco
-    {
-        public List<SeatJsonPoco> seats { get; set;  }
-
-        public TrainJsonPoco()
+        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
         {
-            this.seats = new List<SeatJsonPoco>();
-        }
-    }
-
-    public class SeatJsonPoco
-    {
-        public string booking_reference { get; set; }
-        public string seat_number { get; set; }
-        public string coach { get; set; }
-
-        public SeatJsonPoco()
-        {
+            return new List<object> {TrainId, new DictionaryByValue<string, Coach>(Coaches), MaxSeat};
         }
     }
 }

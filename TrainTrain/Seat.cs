@@ -1,20 +1,30 @@
-﻿namespace TrainTrain
+﻿using System;
+using System.Collections.Generic;
+using Value;
+
+namespace TrainTrain
 {
-    public class Seat
+    public class Seat: ValueType<Seat>
     {
         public string CoachName { get; }
         public int SeatNumber { get; }
-        public string BookingRef { get; set;  }
-
-        public Seat(string coachName, int seatNumber) : this(coachName, seatNumber, string.Empty)
-        {
-        }
+        public string BookingRef { get; }
 
         public Seat(string coachName, int seatNumber, string bookingRef)
         {
-            this.CoachName = coachName;
-            this.SeatNumber = seatNumber;
-            this.BookingRef = bookingRef;
+            CoachName = coachName;
+            SeatNumber = seatNumber;
+            BookingRef = bookingRef;
+        }
+
+        public bool IsAvailable()
+        {
+            return BookingRef == "";
+        }
+
+        protected override IEnumerable<object> GetAllAttributesToBeUsedForEquality()
+        {
+            return new List<object> {CoachName, SeatNumber, BookingRef};
         }
     }
 }
