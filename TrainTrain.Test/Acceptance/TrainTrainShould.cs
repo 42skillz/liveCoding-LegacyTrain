@@ -14,7 +14,7 @@ namespace TrainTrain.Test.Acceptance
         public void Reserve_seats_when_the_train_is_empty()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_10_available_seats());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -27,7 +27,7 @@ namespace TrainTrain.Test.Acceptance
         public void Not_reserve_seats_when_it_exceed_max_capacity_threshold()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_10_seats_with_6_already_reserved());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -40,7 +40,7 @@ namespace TrainTrain.Test.Acceptance
         public void Reserve_all_seats_in_the_same_coach()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_2_coaches_with_9_seats_already_reserved_in_the_first_coach());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -49,7 +49,7 @@ namespace TrainTrain.Test.Acceptance
             Check.That(reservation).IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1B\", \"2B\", \"3B\"]}}");
         }
 
-        private static IBookingReferenceService BuilderBookingReferenceService()
+        private static IBookingReferenceService BuildBookingReferenceService()
         {
             var bookingReferenceService = Substitute.For<IBookingReferenceService>();
             bookingReferenceService.GetBookingReference().Returns(Task.FromResult(BookingReference));
