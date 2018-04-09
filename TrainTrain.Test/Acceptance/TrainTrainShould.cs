@@ -14,7 +14,7 @@ namespace TrainTrain.Test.Acceptance
         public void Reserve_seats_when_the_train_is_empty()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_10_available_seats());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -28,7 +28,7 @@ namespace TrainTrain.Test.Acceptance
         public void Not_reserve_seats_when_it_exceed_max_capacity_threshold()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_10_seats_with_6_already_reserved());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -42,7 +42,7 @@ namespace TrainTrain.Test.Acceptance
         public void Reserve_all_seats_in_the_same_coach()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_2_coaches_and_9_seats_already_reserved_in_the_first_coach());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -56,7 +56,7 @@ namespace TrainTrain.Test.Acceptance
         public void Ideally_not_reserve_seats_in_a_coach_if_it_exceed_70_percent_of_its_capacity()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_3_coaches_and_5_seats_already_reserved_in_the_first_coach());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -70,7 +70,7 @@ namespace TrainTrain.Test.Acceptance
         public void Reserve_seats_in_a_coach_even_if_it_exceed_70_percent_of_its_ideal_capacity_when_there_is_no_other_option_left()
         {
             var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_3_coaches_and_6_seats_and_4_already_reserved());
-            var bookingReferenceService = BuilderBookingReferenceService();
+            var bookingReferenceService = BuildBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
@@ -80,7 +80,7 @@ namespace TrainTrain.Test.Acceptance
                 .IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"5B\", \"6B\", \"7B\", \"8B\", \"9B\", \"10B\"]}}");
         }
 
-        private static IBookingReferenceService BuilderBookingReferenceService()
+        private static IBookingReferenceService BuildBookingReferenceService()
         {
             var bookingReferenceService = Substitute.For<IBookingReferenceService>();
             bookingReferenceService.GetBookingReference().Returns(Task.FromResult(BookingReference));
