@@ -28,7 +28,10 @@ namespace TrainTrain.Test.Acceptance
                 "\"10A\": {\"booking_reference\": \"\", \"seat_number\": \"10\", \"coach\": \"A\"}" +
                 "}}"));
 
-            var webTicketManager = new WebTicketManager(trainDataService);
+            var bookingReferenceService = Substitute.For<IBookingReferenceService>();
+            bookingReferenceService.GetBookingReference().Returns(Task.FromResult(BookingReference));
+
+            var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
             var reservation = webTicketManager.Reserve(TrainId, 3).Result;
 

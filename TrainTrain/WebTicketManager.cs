@@ -13,15 +13,16 @@ namespace TrainTrain
         private const string UriTrainDataService = "http://localhost:50680";
         private readonly ITrainCaching _trainCaching;
         private readonly ITrainDataService _trainDataService;
+        private readonly IBookingReferenceService _bookingReferenceService;
 
-        public WebTicketManager():this(new TrainDataService(UriTrainDataService))
+        public WebTicketManager():this(new TrainDataService(UriTrainDataService), new BookingReferenceService(UriBookingReferenceService))
         {
-
         }
 
-        public WebTicketManager(ITrainDataService trainDataService)
+        public WebTicketManager(ITrainDataService trainDataService, IBookingReferenceService bookingReferenceService)
         {
             _trainDataService = trainDataService;
+            _bookingReferenceService = bookingReferenceService;
             _trainCaching = new TrainCaching();
             _trainCaching.Clear();
         }
@@ -62,10 +63,7 @@ namespace TrainTrain
                 }
                 else
                 {
-                    using (var client = new HttpClient())
-                    {
-                        bookingRef = await GetBookRef(client);
-                    }
+                    bookingRef = await _bookingReferenceService.GetBookingReference();
 
                     foreach (var availableSeat in availableSeats)
                     {
@@ -90,7 +88,7 @@ namespace TrainTrain
                         var response = await client.PostAsync("reserve", resJson);
                         response.EnsureSuccessStatusCode();
 
-
+                        
                         return $"{{\"train_id\": \"{trainId}\", \"booking_reference\": \"{bookingRef}\", \"seats\": {DumpSeats(availableSeats)}}}";
                     }
                 }
@@ -146,21 +144,6 @@ namespace TrainTrain
             var result = $"{{\r\n\t\"train_id\": \"{trainId}\",\r\n\t\"seats\": {seats},\r\n\t\"booking_reference\": \"{bookingRef}\"\r\n}}";
 
             return result;
-        }
-
-        protected async Task<string> GetBookRef(HttpClient client)
-        {
-            var value = new MediaTypeWithQualityHeaderValue("application/json");
-            client.BaseAddress = new Uri(UriBookingReferenceService);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(value);
-
-            // HTTP GET
-            var response = await client.GetAsync("/booking_reference");
-            response.EnsureSuccessStatusCode();
-
-            var bookingRef = await response.Content.ReadAsStringAsync();
-            return bookingRef;
         }
     }
 }
