@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Acceptance\TrainTopologyGenerator.cs" />
     <Compile Include="Acceptance\TrainTrainShould.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

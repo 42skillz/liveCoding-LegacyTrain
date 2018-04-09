@@ -13,29 +13,55 @@ namespace TrainTrain.Test.Acceptance
         [Test]
         public void Reserve_seats_when_the_train_is_empty()
         {
-            var trainDataService = Substitute.For<ITrainDataService>();
-            trainDataService.GetTrain(TrainId).Returns(Task.FromResult(
-                "{\"seats\": {" +
-                "\"1A\": {\"booking_reference\": \"\", \"seat_number\": \"1\", \"coach\": \"A\"}, " +
-                "\"2A\": {\"booking_reference\": \"\", \"seat_number\": \"2\", \"coach\": \"A\"}," +
-                "\"3A\": {\"booking_reference\": \"\", \"seat_number\": \"3\", \"coach\": \"A\"}," +
-                "\"4A\": {\"booking_reference\": \"\", \"seat_number\": \"4\", \"coach\": \"A\"}," +
-                "\"5A\": {\"booking_reference\": \"\", \"seat_number\": \"5\", \"coach\": \"A\"}," +
-                "\"6A\": {\"booking_reference\": \"\", \"seat_number\": \"6\", \"coach\": \"A\"}," +
-                "\"7A\": {\"booking_reference\": \"\", \"seat_number\": \"7\", \"coach\": \"A\"}," +
-                "\"8A\": {\"booking_reference\": \"\", \"seat_number\": \"8\", \"coach\": \"A\"}," +
-                "\"9A\": {\"booking_reference\": \"\", \"seat_number\": \"9\", \"coach\": \"A\"}," +
-                "\"10A\": {\"booking_reference\": \"\", \"seat_number\": \"10\", \"coach\": \"A\"}" +
-                "}}"));
-
-            var bookingReferenceService = Substitute.For<IBookingReferenceService>();
-            bookingReferenceService.GetBookingReference().Returns(Task.FromResult(BookingReference));
+            var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_10_available_seats());
+            var bookingReferenceService = BuilderBookingReferenceService();
 
             var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
 
             var reservation = webTicketManager.Reserve(TrainId, 3).Result;
 
             Check.That(reservation).IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1A\", \"2A\", \"3A\"]}}");
+        }
+
+        [Test]
+        public void Not_reserve_seats_when_it_exceed_max_capacity_threshold()
+        {
+            var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_10_seats_with_6_already_reserved());
+            var bookingReferenceService = BuilderBookingReferenceService();
+
+            var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
+
+            var reservation = webTicketManager.Reserve(TrainId, 3).Result;
+
+            Check.That(reservation).IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"\", \"seats\": []}}");
+        }
+
+        [Test, Ignore("While refactoring")]
+        public void Reserve_all_seats_in_the_same_coach()
+        {
+            var trainDataService = BuildTrainDataService(TrainTopologyGenerator.Get_train_with_2_coaches_with_9_seats_already_reserved_in_the_first_coach());
+            var bookingReferenceService = BuilderBookingReferenceService();
+
+            var webTicketManager = new WebTicketManager(trainDataService, bookingReferenceService);
+
+            var reservation = webTicketManager.Reserve(TrainId, 3).Result;
+
+            Check.That(reservation).IsEqualTo($"{{\"train_id\": \"{TrainId}\", \"booking_reference\": \"{BookingReference}\", \"seats\": [\"1A\", \"2A\", \"3A\"]}}");
+        }
+
+        private static IBookingReferenceService BuilderBookingReferenceService()
+        {
+            var bookingReferenceService = Substitute.For<IBookingReferenceService>();
+            bookingReferenceService.GetBookingReference().Returns(Task.FromResult(BookingReference));
+            return bookingReferenceService;
+        }
+
+        private static ITrainDataService BuildTrainDataService(string trainTopology)
+        {
+            var trainDataService = Substitute.For<ITrainDataService>();
+            trainDataService.GetTrain(TrainId)
+                .Returns(Task.FromResult(trainTopology));
+            return trainDataService;
         }
     }
 }

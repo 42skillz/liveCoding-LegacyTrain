@@ -76,21 +76,9 @@ namespace TrainTrain
                 {
                     await _trainCaching.Save(trainId, train, bookingRef);
 
-                    using (var client = new HttpClient())
-                    {
-                        var value = new MediaTypeWithQualityHeaderValue("application/json");
-                        client.BaseAddress = new Uri(UriTrainDataService);
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(value);
+                    await _trainDataService.Reserve(trainId, bookingRef, availableSeats);
 
-                        // HTTP POST
-                        HttpContent resJson = new StringContent(BuildPostContent(trainId, bookingRef, availableSeats), Encoding.UTF8, "application/json");
-                        var response = await client.PostAsync("reserve", resJson);
-                        response.EnsureSuccessStatusCode();
-
-                        
-                        return $"{{\"train_id\": \"{trainId}\", \"booking_reference\": \"{bookingRef}\", \"seats\": {DumpSeats(availableSeats)}}}";
-                    }
+                    return $"{{\"train_id\": \"{trainId}\", \"booking_reference\": \"{bookingRef}\", \"seats\": {DumpSeats(availableSeats)}}}";
                 }
             }
 
@@ -119,31 +107,6 @@ namespace TrainTrain
             sb.Append("]");
 
             return sb.ToString();
-        }
-
-        private static string BuildPostContent(string trainId, string bookingRef, IEnumerable<Seat> availableSeats)
-        {
-            var seats = new StringBuilder("[");
-            bool firstTime = true;
-
-            foreach (var s in availableSeats)
-            {
-                if (!firstTime)
-                {
-                    seats.Append(", ");
-                }
-                else
-                {
-                    firstTime = false;
-                }
-
-                seats.Append($"\"{s.SeatNumber}{s.CoachName}\"");
-            }
-            seats.Append("]");
-
-            var result = $"{{\r\n\t\"train_id\": \"{trainId}\",\r\n\t\"seats\": {seats},\r\n\t\"booking_reference\": \"{bookingRef}\"\r\n}}";
-
-            return result;
         }
     }
 }
